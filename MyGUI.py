@@ -1,6 +1,22 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 import numpy as np
+
+
+def open_csv():
+    file_path = filedialog.askopenfilename(title="Open CSV File", filetypes=[("CSV files", "*.csv")])
+    if file_path:
+        df = pd.read_csv(file_path)
+        update_treeview(df)
+
+def update_treeview(data):
+    # Clear existing data in Treeview
+    for item in tree.get_children():
+        tree.delete(item)
+
+    # Insert new data into Treeview
+    for index, row in data.iterrows():
+        tree.insert("", "end", values=row.tolist())
 
 # ข้อมูลจาก NumPy array
 data = np.array([
@@ -37,6 +53,7 @@ tree.heading(4, text="ส่วนสูง")
 
 # เพิ่มข้อมูลลงใน Treeview
 for row in data:
+    # Convert each element to a string before inserting into the Treeview
     str_row = [str(element) for element in row]
     tree.insert("", "end", values=str_row)
 
@@ -66,8 +83,7 @@ entry_gender.grid(row=4, column=1, pady=10)
 
 # สร้างปุ่มกด (พื้นหลังสีเขียว)
 calculate_button = tk.Button(root, text="คำนวณ", bg="green", fg="white")
-calculate_button.grid(row=5, column=1, pady=20)
-
+calculate_button.grid(row=5, column=1, pady=5)
 
 # Label แสดงผลลัพธ์
 label_result = tk.Label(root, text="ผลลัพธ์:")
@@ -75,6 +91,10 @@ label_result.grid(row=6, column=0)
 result_entry = tk.Entry(root)
 result_entry.grid(row=6, column=1, pady=10)
 
+# สร้างปุ่มกด (เปิดไฟล์ CSV)
+open_csv_button = tk.Button(root, text="Open CSV", command=open_csv)
+open_csv_button.grid(row=0, column=2, pady=10)
+
 # กำหนดขนาดหน้าจอและแสดง GUI
-root.geometry("415x520+420+220")
+root.geometry("460x480+420+220")
 root.mainloop()
