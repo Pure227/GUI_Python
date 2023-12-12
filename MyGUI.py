@@ -1,12 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
+import pandas as pd  
 import numpy as np
+
 
 
 def open_csv():
     file_path = filedialog.askopenfilename(title="Open CSV File", filetypes=[("CSV files", "*.csv")])
     if file_path:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, encoding='cp1252')
         update_treeview(df)
 
 def update_treeview(data):
@@ -17,6 +19,10 @@ def update_treeview(data):
     # Insert new data into Treeview
     for index, row in data.iterrows():
         tree.insert("", "end", values=row.tolist())
+
+    # Update result entry field (example: concatenate values from the first row)
+    result_entry.delete(0, tk.END)
+    result_entry.insert(0, ', '.join(map(str, data.iloc[0].tolist())))
 
 # ข้อมูลจาก NumPy array
 data = np.array([
@@ -60,6 +66,10 @@ for row in data:
 # แสดง Treeview
 tree.grid(row=0, column=1, padx=10, pady=10)
 
+# สร้างปุ่มกด (เปิดไฟล์ CSV)
+open_csv_button = tk.Button(root, text="Open CSV", command=open_csv)
+open_csv_button.grid(row=0, column=2, pady=10)
+
 # สร้างช่องใส่ข้อมูล 4 ช่อง พร้อมข้อความกำกับ
 label_weight = tk.Label(root, text="น้ำหนัก:")
 label_weight.grid(row=1, column=0)
@@ -91,9 +101,7 @@ label_result.grid(row=6, column=0)
 result_entry = tk.Entry(root)
 result_entry.grid(row=6, column=1, pady=10)
 
-# สร้างปุ่มกด (เปิดไฟล์ CSV)
-open_csv_button = tk.Button(root, text="Open CSV", command=open_csv)
-open_csv_button.grid(row=0, column=2, pady=10)
+
 
 # กำหนดขนาดหน้าจอและแสดง GUI
 root.geometry("460x480+420+220")
