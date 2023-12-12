@@ -1,28 +1,38 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
-import pandas as pd  
+from PIL import Image, ImageTk  
+import pandas as pd
 import numpy as np
-
 
 
 def open_csv():
     file_path = filedialog.askopenfilename(title="Open CSV File", filetypes=[("CSV files", "*.csv")])
     if file_path:
+
         df = pd.read_csv(file_path, encoding='cp1252')
         update_treeview(df)
 
+
 def update_treeview(data):
-    # Clear existing data in Treeview
     for item in tree.get_children():
         tree.delete(item)
 
-    # Insert new data into Treeview
     for index, row in data.iterrows():
         tree.insert("", "end", values=row.tolist())
 
-    # Update result entry field (example: concatenate values from the first row)
     result_entry.delete(0, tk.END)
     result_entry.insert(0, ', '.join(map(str, data.iloc[0].tolist())))
+
+def open_image():
+    file_path = filedialog.askopenfilename(title="Open Image File", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
+    if file_path:
+
+        img = Image.open(file_path)
+        img = img.resize((220, 220), resample=Image.ANTIALIAS)
+        new_image = ImageTk.PhotoImage(img)
+        image_label.config(image=new_image)
+        image_label.image = new_image
+
 
 # ข้อมูลจาก NumPy array
 data = np.array([
@@ -45,6 +55,9 @@ root.title("My GUI")
 # สร้าง Treeview สำหรับแสดงตาราง
 tree = ttk.Treeview(root, columns=(1, 2, 3, 4), show="headings", height=10)
 
+image_label = tk.Label(root)
+image_label.grid(row=0, column=2, padx=10, pady=10)
+
 # กำหนดขนาดของคอลัมน์
 tree.column(1, width=80)
 tree.column(2, width=80)
@@ -59,7 +72,6 @@ tree.heading(4, text="ส่วนสูง")
 
 # เพิ่มข้อมูลลงใน Treeview
 for row in data:
-    # Convert each element to a string before inserting into the Treeview
     str_row = [str(element) for element in row]
     tree.insert("", "end", values=str_row)
 
@@ -68,41 +80,47 @@ tree.grid(row=0, column=1, padx=10, pady=10)
 
 # สร้างปุ่มกด (เปิดไฟล์ CSV)
 open_csv_button = tk.Button(root, text="Open CSV", command=open_csv)
-open_csv_button.grid(row=0, column=2, pady=10)
+open_csv_button.place(x=350, y=250)
+
+# สร้างปุ่มกด (เปิดไฟล์รูปภาพ)
+open_image_button = tk.Button(root, text="Open Image", command=open_image)
+open_image_button.place(x=350, y=290)
 
 # สร้างช่องใส่ข้อมูล 4 ช่อง พร้อมข้อความกำกับ
 label_weight = tk.Label(root, text="น้ำหนัก:")
-label_weight.grid(row=1, column=0)
+label_weight.place(x=100, y=255)
 entry_weight = tk.Entry(root)
-entry_weight.grid(row=1, column=1, pady=10)
+entry_weight.place(x=200, y=255)
 
 label_height = tk.Label(root, text="ส่วนสูง:")
-label_height.grid(row=2, column=0)
+label_height.place(x=100, y=294)
 entry_height = tk.Entry(root)
-entry_height.grid(row=2, column=1, pady=10)
+entry_height.place(x=200, y=294)
 
 label_age = tk.Label(root, text="อายุ:")
-label_age.grid(row=3, column=0)
+label_age.place(x=100, y=333)
 entry_age = tk.Entry(root)
-entry_age.grid(row=3, column=1, pady=10)
+entry_age.place(x=200, y=333)
 
 label_gender = tk.Label(root, text="เพศ:")
-label_gender.grid(row=4, column=0)
+label_gender.place(x=100, y=372)
 entry_gender = tk.Entry(root)
-entry_gender.grid(row=4, column=1, pady=10)
+entry_gender.place(x=200, y=372)
 
 # สร้างปุ่มกด (พื้นหลังสีเขียว)
 calculate_button = tk.Button(root, text="คำนวณ", bg="green", fg="white")
-calculate_button.grid(row=5, column=1, pady=5)
+calculate_button.place(x=200, y=410)
 
 # Label แสดงผลลัพธ์
 label_result = tk.Label(root, text="ผลลัพธ์:")
-label_result.grid(row=6, column=0)
+label_result.place(x=100, y=450)
 result_entry = tk.Entry(root)
-result_entry.grid(row=6, column=1, pady=10)
+result_entry.place(x=200, y=450)
+
+
 
 
 
 # กำหนดขนาดหน้าจอและแสดง GUI
-root.geometry("460x480+420+220")
+root.geometry("600x500+420+220")
 root.mainloop()
