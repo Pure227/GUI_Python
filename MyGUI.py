@@ -33,6 +33,23 @@ def open_image():
         image_label.config(image=new_image)
         image_label.image = new_image
 
+def calculate_bmi():
+    try:
+        weight = float(entry_weight.get())
+        height = float(entry_height.get()) / 100  # Convert height to meters
+        bmi = weight / (height ** 2)
+        result_entry.delete(0, tk.END)
+
+        if bmi < 18.5:
+            result_entry.insert(0, f'ผอม')
+        elif 18.5 <= bmi < 24.9:
+            result_entry.insert(0, f'สมส่วน')
+        else:
+            result_entry.insert(0, f'อ้วน')
+
+    except ValueError:
+        result_entry.delete(0, tk.END)
+        result_entry.insert(0, 'กรุณาป้อนข้อมูลให้ถูกต้อง')
 
 # ข้อมูลจาก NumPy array
 data = np.array([
@@ -80,46 +97,42 @@ tree.grid(row=0, column=1, padx=10, pady=10)
 
 # สร้างปุ่มกด (เปิดไฟล์ CSV)
 open_csv_button = tk.Button(root, text="Open CSV", command=open_csv)
-open_csv_button.place(x=350, y=250)
+open_csv_button.place(x=10, y=250)
 
 # สร้างปุ่มกด (เปิดไฟล์รูปภาพ)
 open_image_button = tk.Button(root, text="Open Image", command=open_image)
-open_image_button.place(x=350, y=290)
+open_image_button.place(x=10, y=290)
 
 # สร้างช่องใส่ข้อมูล 4 ช่อง พร้อมข้อความกำกับ
 label_weight = tk.Label(root, text="น้ำหนัก:")
-label_weight.place(x=100, y=255)
+label_weight.place(x=150, y=255)
 entry_weight = tk.Entry(root)
 entry_weight.place(x=200, y=255)
 
 label_height = tk.Label(root, text="ส่วนสูง:")
-label_height.place(x=100, y=294)
+label_height.place(x=150, y=294)
 entry_height = tk.Entry(root)
 entry_height.place(x=200, y=294)
 
 label_age = tk.Label(root, text="อายุ:")
-label_age.place(x=100, y=333)
+label_age.place(x=150, y=333)
 entry_age = tk.Entry(root)
 entry_age.place(x=200, y=333)
 
 label_gender = tk.Label(root, text="เพศ:")
-label_gender.place(x=100, y=372)
+label_gender.place(x=150, y=372)
 entry_gender = tk.Entry(root)
 entry_gender.place(x=200, y=372)
 
 # สร้างปุ่มกด (พื้นหลังสีเขียว)
-calculate_button = tk.Button(root, text="คำนวณ", bg="green", fg="white")
+calculate_button = tk.Button(root, text="คำนวณ", bg="green", fg="white", command=calculate_bmi)
 calculate_button.place(x=200, y=410)
 
 # Label แสดงผลลัพธ์
 label_result = tk.Label(root, text="ผลลัพธ์:")
-label_result.place(x=100, y=450)
+label_result.place(x=150, y=450)
 result_entry = tk.Entry(root)
 result_entry.place(x=200, y=450)
-
-
-
-
 
 # กำหนดขนาดหน้าจอและแสดง GUI
 root.geometry("600x500+420+220")
